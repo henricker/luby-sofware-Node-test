@@ -1,0 +1,26 @@
+{
+  "name": "luby-data",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node-dev --transpile-only src/app.ts"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.6.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.12",
+    "@types/jsonwebtoken": "^8.5.2",
+    "@types/node": "^15.12.5",
+    "sequelize-cli": "^6.2.0",
+    "ts-node-dev": "^1.1.7",
+    "typescript": "^4.3.5"
+  }
+}
