@@ -1,18 +1,21 @@
-import { exception } from 'console';
 import { NextFunction } from 'express';
 import { Request, Response } from 'express-serve-static-core';
 import User from '../models/User.model';
+import Token from '../models/Token.model';
+
 import JwtAuth from './jwt/Jwt';
 
 class Auth {
 
-   static async authenticate(request: Request, response: Response) {
+  private static allowEndpoints = ["/user:POST", "/user/auth:POST"]
+
+  static async authenticate(request: Request, response: Response) {
     const { username } = request.body;
   
     const user = await User.findOne({ where: { username } });
 
     if(!user)
-      throw new exception("O usuário não existe");
+      return response.status(404).json({ error: "Usuário não encontrado" });
 
     const token = JwtAuth.sign({ 
       id: user.getDataValue('id')
@@ -24,7 +27,12 @@ class Auth {
     return response.status(200).json({ token });
   }
 
-  static async authFilter(request: Request, response: Response, next: NextFunction) { 
+  static async authFilter(request: Request, response: Response, next: NextFunction) {
+
+
+    if(Auth.allowEndpoints.includes(`${request.path}:${request.method}`))
+      return next();
+    
     if(request.headers.authorization === undefined)
       return response.status(403).json({ error: "token não provido" });
 

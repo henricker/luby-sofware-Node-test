@@ -24,7 +24,6 @@ export = {
        created_at: {
          type: DataTypes.DATE,
          allowNull: false,
-         defaultValue: new Date()
        }
       
     });
