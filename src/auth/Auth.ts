@@ -1,12 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
-import User from '../models/User.model';
-import Token from '../models/Token.model';
+import User from '../app/models/User.model';
+import TokenService from '../app/service/Token.service';
+import UserService from '../app/service/User.service';
 
 import JwtAuth from './jwt/Jwt';
+const tokenService = new TokenService();
+const userService = new UserService();
 
 class Auth {
 
-  private static allowEndpoints = ["/user:POST", "/user/auth:POST", "/user:GET", "/token:GET"]
+  private static allowEndpoints = ["/user:POST", "/user/auth:POST", "/user:GET", "/token:GET", "/user/:DELETE", "/user/:PUT", "/user/:GET"]
 
   static async authenticate(request: Request, response: Response) {
     const { username } = request.body;
@@ -24,14 +27,16 @@ class Auth {
       algorithm: 'HS256' 
     });
 
-    await Token.create({ user_id: user.getDataValue('id') });
+    const user_id = user.getDataValue('id');
+    await tokenService.create(user_id);
     return response.status(200).json({ data: user, token });
   }
 
   static async authFilter(request: Request, response: Response, next: NextFunction) {
 
+    console.log(`${request.path}:${request.method}`.replace(/\d{1,}/, ''))
 
-    if(Auth.allowEndpoints.includes(`${request.path}:${request.method}`))
+    if(Auth.allowEndpoints.includes(`${request.path}:${request.method}`.replace(/\d{1,}/, '')))
       return next();
     
     if(request.headers.authorization === undefined)
@@ -52,7 +57,9 @@ class Auth {
     JwtAuth.verify(token, async (err, decoded) => {
       if(err)
         return response.status(401).json({ error: "token inválido" });
-    
+      
+      if(!(await userService.existsUser(decoded.id)))
+        return response.status(401).json({ error: "Usuário pertencente ao token não encontrado" });
 
       request['id'] = decoded.id;
       return next();

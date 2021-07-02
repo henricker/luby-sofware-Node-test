@@ -1,34 +1,26 @@
-import { Request, Response } from "express";
 import User from "../models/User.model";
+import { IUserDTO } from "./DTO/CreateUser.dto";
 
-class UserController {
+class UserService {
 
-  async getAllUsers(request: Request, response: Response) {
+  async getAllUsers() {
     const data = await User.findAll();
 
-    return response.status(200).json({ data, count: data.length });
+    return { data, count: data.length };
   }
 
-  async getUser(request: Request, response: Response) {
-    const id = request.params.id;
+  async getUser(id: number) {
 
     const user = await User.findByPk(id);
     
     if(user === null)
-      return response.status(404).json({ error: ["Usuário não encontrado"]});
+      return { error: ["Usuário não encontrado"]};
 
-    return response.status(200).json({
-      data: [
-        user
-      ],
-
-      count: 1
-    });
+    return { data: [ user], count: 1};
   }
 
-  async create(request: Request, response: Response) {
-    const { name, username, avatar, email, city, state, bio } = request.body;
-
+  async create({ name, username, avatar, email, city, state, bio }: IUserDTO) {
+    
     const usernameExists = await User.findOne({ where: { username } });
     const emailExists = await User.findOne({ where: { email } });
 
@@ -37,7 +29,7 @@ class UserController {
     emailExists !== null ? error.push("Email já cadastrado") : '';
 
     if(error.length > 0)
-      return response.status(400).json({ error });
+      return { error };
 
     const user = await User.create({
       name,
@@ -49,28 +41,23 @@ class UserController {
       state,
     });
 
-    return response.status(201).json(user);
+    return user;
   }
 
-  async delete(request: Request, response: Response) {
-    const id = request.params.id;
-
+  async delete(id: number) {
     const user = await User.findByPk(id);
     
     if(user === null)
-      return response.status(404).json({ error: ["Usuário não encontrado"]});
+      return { error: ["Usuário não encontrado"]};
 
     await User.destroy({
       where: { id },
     });
     
-    return response.status(200).json({ message: "Usuário deletado com sucesso"});
+    return { message: "Usuário deletado com sucesso"};
   }
 
-  async update(request: Request, response: Response) {
-    const id = request.params.id;
-
-    const { name, username, avatar, email, city, state, bio } = request.body;
+  async update(id: string, { name, avatar, bio, city, email, state, username }: IUserDTO) {
 
     const usernameExists = await User.findOne({ where: { username } });
     const emailExists = await User.findOne({ where: { email } });
@@ -80,7 +67,7 @@ class UserController {
     emailExists !== null ? error.push("Email já cadastrado") : '';
 
     if(error.length > 0)
-      return response.status(400).json({ error });
+      return { error };
 
     const userUpdated = User.update(
       {
@@ -95,8 +82,18 @@ class UserController {
       { where: { id } }
     );
 
-    return response.status(201).json(userUpdated);
+    console.log(userUpdated);
+    return userUpdated;
+  }
+
+
+  async existsUser(id: number): Promise<boolean> {
+    const user = await User.findByPk(id);
+
+    if(!user)
+      return false;
+    return true;
   }
 }
 
-export default UserController;
+export default UserService;

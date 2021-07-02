@@ -4,8 +4,8 @@ import 'express-async-errors';
 import router from './routes';
 import dotenv from 'dotenv';
 import Auth from './auth/Auth';
-import { authSchema } from './validators/Validators';
-import validatorMiddleware from './validators/Validator.middleware';
+import { authSchema } from './app/validators/Validators';
+import validatorMiddleware from './app/validators/Validator.middleware';
 
 dotenv.config();
 

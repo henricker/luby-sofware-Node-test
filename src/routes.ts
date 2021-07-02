@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import TokenController from './controllers/Token.controller';
-import UserController from './controllers/User.controller';
-import validatorMiddleware from './validators/Validator.middleware';
-import { userSchema } from './validators/Validators';
+import TokenController from './app/controllers/Token.controller';
+import userController from './app/controllers/User.controller'
+import validatorMiddleware from './app/validators/Validator.middleware';
+import { userSchema } from './app/validators/Validators';
 
 const router = Router();
 
-const userController = new UserController();
+
 const tokenController = new TokenController();
 
 router.get('/token', tokenController.getTokens);
