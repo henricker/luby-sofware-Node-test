@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import UserService from "../service/User.service";
 
 const userService = new UserService();
+
 class UserController {
   async getAllUsers(request: Request, response: Response) {
     const data = await userService.getAllUsers();
@@ -49,6 +50,32 @@ class UserController {
     
     return response.status(200).json(data);
   }
+
+  // //needs be authenticated
+  // async follow(request: Request, response: Response) {
+  //   const following_id = Number.parseInt(request['id']);
+  //   const followed_id = Number.parseInt(request.params['id']);
+
+  //   const data = await followerFollowing.follow(following_id, followed_id);
+
+  //   if(data['error'])
+  //     return response.status(400).json(data);
+
+  //   return response.status(200).json(data);
+  // }
+
+  //   //needs be authenticated
+  //   async unfollow(request: Request, response: Response) {
+  //     const following_id = Number.parseInt(request['id']);
+  //     const followed_id = Number.parseInt(request.params['id']);
+  
+  //     const data = await followerFollowing.unfollow(following_id, followed_id);
+  
+  //     if(data['error'])
+  //       return response.status(400).json(data);
+  
+  //     return response.status(200).json(data);
+  //   }
 }
 
 export default new UserController();

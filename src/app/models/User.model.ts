@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import connection from "../../database";
-import FollowerFollowing from "./FollowerFollowing.model";
+import Follow from "./Follow.model";
 
 const User = connection.define(
   "users",
@@ -19,19 +19,18 @@ const User = connection.define(
   },
 );
 
-//Auto relationship, user has followers
 User.belongsToMany(User, {
-  through: FollowerFollowing,
+  through: Follow,
   as: 'followers',
-  foreignKey: 'follower_id'
+  foreignKey: 'followed'
 });
 
-//Auto relationship, user follow others users
 User.belongsToMany(User, {
-  through: FollowerFollowing,
+  through: Follow,
   as: 'followings',
-  foreignKey: 'following_id'
-});
+  foreignKey: 'follower'
+})
+
 
 
 export default User;

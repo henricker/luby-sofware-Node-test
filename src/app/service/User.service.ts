@@ -4,7 +4,7 @@ import { IUserDTO } from "./DTO/CreateUser.dto";
 class UserService {
 
   async getAllUsers() {
-    const data = await User.findAll();
+    const data = await User.findAll({ include: [{ model: User, as: 'followers' }, { model: User, as: 'followings' }] });
 
     return { data, count: data.length };
   }

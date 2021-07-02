@@ -4,14 +4,11 @@ import 'express-async-errors';
 import router from './routes';
 import dotenv from 'dotenv';
 import Auth from './auth/Auth';
-import { authSchema } from './app/validators/Validators';
-import validatorMiddleware from './app/validators/Validator.middleware';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.post('/user/auth', (request, response, next) => validatorMiddleware(request, response, next, authSchema ), Auth.authenticate);
 app.use(Auth.authFilter);
 app.use(router);
 
