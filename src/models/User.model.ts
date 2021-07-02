@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import connection from "../database";
+import Token from "./Token.model";
 
 const User = connection.define(
   "users",
@@ -10,7 +11,7 @@ const User = connection.define(
     city: DataTypes.STRING,
     state: DataTypes.STRING,
     email: DataTypes.STRING,
-    avatar: DataTypes.STRING
+    avatar: DataTypes.STRING,
   },
   {
     timestamps: true,

@@ -1,5 +1,4 @@
-import { NextFunction } from 'express';
-import { Request, Response } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import User from '../models/User.model';
 import Token from '../models/Token.model';
 
@@ -7,7 +6,7 @@ import JwtAuth from './jwt/Jwt';
 
 class Auth {
 
-  private static allowEndpoints = ["/user:POST", "/user/auth:POST"]
+  private static allowEndpoints = ["/user:POST", "/user/auth:POST", "/user:GET", "/token:GET"]
 
   static async authenticate(request: Request, response: Response) {
     const { username } = request.body;
@@ -24,7 +23,9 @@ class Auth {
       expiresIn: '1h',
       algorithm: 'HS256' 
     });
-    return response.status(200).json({ token });
+
+    await Token.create({ user_id: user.getDataValue('id') });
+    return response.status(200).json({ data: user, token });
   }
 
   static async authFilter(request: Request, response: Response, next: NextFunction) {
@@ -48,7 +49,7 @@ class Auth {
       return response.status(401).json({ error: "token mal formatado" });
     
 
-    JwtAuth.verify(token, (err, decoded) => {
+    JwtAuth.verify(token, async (err, decoded) => {
       if(err)
         return response.status(401).json({ error: "token inválido" });
     

@@ -2,14 +2,14 @@ import { QueryInterface, DataTypes } from "sequelize";
 
 export = {
   up: async (queryInterface: QueryInterface) => {
-     await queryInterface.createTable('tokens', { 
+     await queryInterface.createTable('follower_following', { 
        id: {
          type: DataTypes.INTEGER,
          primaryKey: true,
          autoIncrement: true
        },
 
-       user_id: {
+       follower_id: {
          type: DataTypes.INTEGER,
          allowNull: false,
          onDelete: 'CASCADE',
@@ -17,6 +17,18 @@ export = {
 
          references: {
            model: { tableName: 'users'},
+           key: 'id'
+         }
+       },
+
+       following_id: {
+         type: DataTypes.INTEGER,
+         allowNull: false,
+         onDelete: 'CASCADE',
+         onUpdate: 'CASCADE',
+
+         references: {
+           model: { tableName: 'users' },
            key: 'id'
          }
        },
@@ -35,6 +47,6 @@ export = {
   },
 
   down: async (queryInterface: QueryInterface) => {
-     await queryInterface.dropTable('tokens'); 
+     await queryInterface.dropTable('follower_following'); 
   }
 };

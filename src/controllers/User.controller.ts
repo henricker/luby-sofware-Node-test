@@ -1,31 +1,43 @@
-import { exception } from "console";
-import { Request, Response } from "express-serve-static-core";
-import User from '../models/User.model';
+import { Request, Response } from "express";
+import User from "../models/User.model";
 
 class UserController {
 
-	async getUser(request: Request, reponse: Response) {
-		const id = request.params.id;
+  async getAllUsers(request: Request, response: Response) {
+    const data = await User.findAll();
 
-		const user = await User.findByPk(id);
+    return response.status(200).json({ data, count: data.length });
+  }
 
-		if(!user)
-			throw new exception("O usuário não existe");
+  async getUser(request: Request, response: Response) {
+    const id = request.params.id;
 
-		return reponse.status(200).json(user);
-	}
+    const user = await User.findByPk(id);
+    
+    if(user === null)
+      return response.status(404).json({ error: ["Usuário não encontrado"]});
 
-  async create (request: Request , response: Response) {
+    return response.status(200).json({
+      data: [
+        user
+      ],
 
-    const {
-      name,
-      username,
-      avatar,
-      email,
-      city,
-      state,
-      bio
-     } = request.body;
+      count: 1
+    });
+  }
+
+  async create(request: Request, response: Response) {
+    const { name, username, avatar, email, city, state, bio } = request.body;
+
+    const usernameExists = await User.findOne({ where: { username } });
+    const emailExists = await User.findOne({ where: { email } });
+
+    let error = []
+    usernameExists !== null ? error.push("Username já cadastrado") : '';
+    emailExists !== null ? error.push("Email já cadastrado") : '';
+
+    if(error.length > 0)
+      return response.status(400).json({ error });
 
     const user = await User.create({
       name,
@@ -34,7 +46,7 @@ class UserController {
       bio,
       email,
       city,
-      state
+      state,
     });
 
     return response.status(201).json(user);
@@ -43,45 +55,48 @@ class UserController {
   async delete(request: Request, response: Response) {
     const id = request.params.id;
 
-    await User.destroy({
-      where: { id }
-    });
+    const user = await User.findByPk(id);
+    
+    if(user === null)
+      return response.status(404).json({ error: ["Usuário não encontrado"]});
 
-    return response.status(204);
+    await User.destroy({
+      where: { id },
+    });
+    
+    return response.status(200).json({ message: "Usuário deletado com sucesso"});
   }
 
   async update(request: Request, response: Response) {
-
     const id = request.params.id;
 
-    const {
-      name,
-      username,
-      avatar,
-      email,
-      city,
-      state,
-      bio
-     } = request.body;
+    const { name, username, avatar, email, city, state, bio } = request.body;
 
-    const userAlreadyExists = await User.findByPk(id);
+    const usernameExists = await User.findOne({ where: { username } });
+    const emailExists = await User.findOne({ where: { email } });
 
-    if(!userAlreadyExists)
-		 	throw new exception("O usuário não existe");
+    let error = []
+    usernameExists !== null ? error.push("Username já cadastrado") : '';
+    emailExists !== null ? error.push("Email já cadastrado") : '';
 
-    const userUpdated = User.update({
-			name,
-			username,
-			avatar,
-			email,
-			city,
-			state,
-			bio
-		}, { where: { id }});
+    if(error.length > 0)
+      return response.status(400).json({ error });
+
+    const userUpdated = User.update(
+      {
+        name,
+        username,
+        avatar,
+        email,
+        city,
+        state,
+        bio,
+      },
+      { where: { id } }
+    );
 
     return response.status(201).json(userUpdated);
   }
-
 }
 
 export default UserController;
