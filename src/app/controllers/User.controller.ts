@@ -37,7 +37,7 @@ class UserController {
 
   async delete(request: Request, response: Response) {
     const id = Number.parseInt(request.params.id);
-    const data = userService.delete(id);
+    const data = await userService.delete(id);
     if (data["erro"]) return response.status(404).json(data);
     return response.status(200).json(data);
   }

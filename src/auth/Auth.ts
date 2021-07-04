@@ -26,7 +26,7 @@ class Auth {
 
     const user_id = user["id"];
     await tokenService.create(user_id);
-    return response.status(200).json({ user, token });
+    return response.status(200).json({ data: {user, token}, count: 1 });
   }
 
   static async authFilter(
