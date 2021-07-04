@@ -14,7 +14,7 @@
 
 
 ## Como rodar o projeto?
-- ```bash 
+```bash 
   git clone https://github.com/henricker/luby-sofware-Node-test.git
 
   yarn (or npm install)
