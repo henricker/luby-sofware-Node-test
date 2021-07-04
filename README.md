@@ -1,5 +1,34 @@
 # Teste da Luby Software
 
+## Tecnologias utilizadas
+- NodeJs
+- Express
+- Sequelize
+- PostgreSQL
+- Yup
+- Typescript
+
+## Features adicionais
+- Migrations 
+- Validação das requests com um middleware usando yup
+
+
+## Como rodar o projeto?
+- ```bash 
+  git clone https://github.com/henricker/luby-sofware-Node-test.git
+
+  yarn (or npm install)
+
+  yarn build  
+
+  yarn sequelize db:migrate
+
+  yarn start
+ ```
+
+## Diagrama lógico de como ficou o banco de dados
+<img src="./documentationImages/logicDiagram.png">
+
 ## CRUD de usuários
 - Inicialmente vamos ver os endpoints do CRUD de usuários.
 - Deixei as rotas do crud de usuários como livres para facilitar os testes no insomnia ou postmam, a API deixa você você criar, deletar, atualizar e ver os dados do usuário.
@@ -269,3 +298,106 @@ Operações de repositório (Criar, atualizar e remover)
 ```
 
 ## Endpoints que não requerem autenticação do usuário
+
+Obter os seguidores e usuários seguidos de um usuário a partir do id;
+```json
+{
+  "obterSeguidores": {
+    "name": "Obter seguidores",
+    "method": "GET",
+    "endpoint": "http://localhost:3333/user/followers/:idUser",
+    "responseBody": {
+      "data": [
+        {
+          "id": "id",
+          "username": "username",
+          "avatar": "avatar_url"
+        },
+        {
+          "id": "id2",
+          "username": "username2",
+          "avatar": "avatar_url2"
+        }
+    ],
+    "count": 2
+    }
+  },
+
+  "obterUsuariosSeguidos": {
+    "name": "Obter usuários seguidos",
+    "method": "GET",
+    "endpoint": "http://localhost:3333/user/followings/:idUser",
+    "responseBody": {
+      "data": [
+        {
+          "id": "id",
+          "username": "username",
+          "avatar": "avatar_url"
+        },
+        {
+          "id": "id2",
+          "username": "username2",
+          "avatar": "avatar_url2"
+        }
+    ],
+    "count": 2
+    }
+  }
+}
+```
+Veja que a resposta condiz com o que é requerido quando é necessário listar os usuários no frontend
+
+<img src="./documentationImages/followers.png" width="200">
+
+Obter os repositórios a partir do id do usuário
+```json 
+{
+  "obterRepositóriosPorUsuário": {
+    "name": "Obter repositórios do usuário",
+    "method": "GET",
+    "endpoint": "http://localhost:3333/user/repositories/:userId",
+    "responseBody": {
+      "data": [
+        {
+          "id": "idRepositorio",
+          "name": "nome_repositorio",
+          "description": "descrição_repositorio",
+          "public": true,
+          "slug": "slug-repositorio",
+          "stars": 0
+        },
+      ],
+      "count": 1
+    }
+  }
+}
+```
+
+Veja que a resposta condiz com o que é requerido quando é necessário listar os repositórios no frontend
+
+<img src="./documentationImages/repositories.png" width="200"/>
+
+Também é possível obter as informações de um repositório a partir do seu slug
+
+```json
+{
+  "obterRepositorioPorSlug": {
+    "name": "Obter repositório por slug",
+    "method": "GET",
+    "endpoint": "http://localhost:3333/user/repository/:slug",
+    "responseBody": {
+      "data": {
+        "id": 1,
+        "user_id": 16,
+        "name": "asdasdasda",
+        "description": "api para aprender nodejs",
+        "public": true,
+        "slug": "Henrique-Vieira-asdasdasda",
+        "stars": 0
+      },
+      "count": 1
+    }
+  }
+}
+
+```

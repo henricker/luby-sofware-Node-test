@@ -1,0 +1,7 @@
+DEV_DB_USERNAME=username
+DEV_DB_PASSWORD=password
+DEV_DB_DATABASE=database
+DEV_DB_HOST=host
+DEV_DB_PORT=port
+
+JWT_SECRET_KEY=key
