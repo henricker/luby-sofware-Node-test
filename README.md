@@ -96,7 +96,8 @@ endpoints: [
 ## Autenticação
 - Na API resolvi ir um pouco além e utilizar o Json Web Token (JWT) para autenticar o usuário, basta realizar uma requisição para o endpoint abaixo como exemplo:
 ```json
-  auth: {
+{
+  "auth": {
     "name": "autenticação",
     "method": "POST",
     "endpoint": "http://localhost:3333/user/auth",
@@ -104,6 +105,7 @@ endpoints: [
       "username": "henricker"
     }
   }
+}
 ```
 - Como resposta da autenticação, caso esteja tudo válido será devolvido a seguinte resposta:
 ```json
@@ -132,7 +134,7 @@ endpoints: [
 - Veja que os dados de usuário retornados condizem com o que é requerido ao iniciar o login nas telas de exemplo do teste
 
 <div>
-<img src="./documentationImages/login.png" width="200" height="auto">
+<img src="./documentationImages/login.png" width="200" height="auto" style="margin-right: 37%;">
 <img src="./documentationImages/auth.png" width="200" height="auto">
 <div>
 
@@ -144,4 +146,126 @@ endpoints: [
 
 ## Endpoints que requerem autenticação do usuário
 
-...
+- Para realizar essas operações antes de enviar a requisição, é necessário incluir o token nos headers (Bearer token);
+
+Operações de follow e unfollow
+```json
+{
+  
+  "follow": {
+    "name": "Seguir usuário",
+    "method": "POST",
+    "endpoint": "http://localhost:3333/user/follow/:idOtherUser",
+    "responseBody": {
+      "data": {
+      "follower": "follower_id",
+      "followed": "followed_id",
+      "updatedAt": "updated_date",
+      "createdAt": "created_date"
+    },
+    "count": 1
+    }
+  },
+
+  "unfollow": {
+    "name": "Parar de seguir usuário",
+    "method": "DELETE",
+    "endpoint": "http://localhost:3333/user/unfollow/:idOtherUser",
+    "responseBody": {
+      "message": "Unfollow realizado com sucesso"
+    }
+  }
+
+}
+```
+
+Operações de star/unstar em repositórios
+```json
+{
+  
+  "star": {
+    "name": "Dar estrela (star) no repositório",
+    "method": "POST",
+    "endpoint": "http://localhost:3333/repository/like/:idRepository",
+    "responseBody": {
+      "data": {
+        "id": "idStar",
+        "user_id": "user_id",
+        "repository_id": 1,
+        "updatedAt": "updated_date",
+        "createdAt": "created_date"
+      },
+    "count": 1
+    }
+  },
+
+  "unstar": {
+    "name": "remover estrela (unstar) no repositório",
+    "method": "DELETE",
+    "endpoint": "http://localhost:3333/repository/unlike/idRepository",
+    "responseBody": {
+       "message": "unlike realizado com sucesso"
+    }
+  }
+
+}
+```
+
+Operações de repositório (Criar, atualizar e remover)
+```json
+{
+  /*
+    Nesse caso de criação, pelo que entendi no teste
+    o slug deve ser a concatenação do nome de usuário com o nome do repositório, por isso o slug não é enviado nessa requisição
+  */
+  "create": {
+    "name": "criar repositório",
+    "method": "POST",
+    "endpoint": "http://localhost:3333/user/repository",
+    "requestBody": {
+      "name": "nameRepository",
+      "description": "description",
+      "publicRepo": true //true of false
+    },
+    "responseBody": {
+       "data": {
+          "id": "id_repository",
+          "description": "description",
+          "name": "name_repository",
+          "public": true,
+          "slug": "username-name-repository",
+          "user_id": "user_id"
+        },
+      "count": 1
+    }
+  },
+
+  /*
+    Nos endpoints de deletar e atualizar eu verifico se o repositório é pertencente ao usuário que está logado via token, caso não seja eu retorno uma mensagem de erro.
+  */
+
+  "update": {
+    "name": "Atualizar repositório",
+    "method": "PUT",
+    "endpoint": "http://localhost:3333/user/repository",
+    "requestBody": {
+      "name": "nameRepository",
+      "description": "description",
+      "publicRepo": true //true ou false
+    },
+    "responseBody": {
+      "message": "Repositório atualizado com sucesso"
+    }
+  },
+
+
+  "delete": {
+    "name": "Apagar repositório",
+    "method": "DELETE",
+    "endpoint": "http://localhost:3333/user/repository/:idRepository",
+  }
+}
+
+```
+
+## Endpoints que não requerem autenticação do usuário

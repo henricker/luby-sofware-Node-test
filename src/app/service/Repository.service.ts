@@ -7,9 +7,7 @@ const userService = new UserService();
 
 class RepositoryService {
   async create({ description, name, publicRepo, user_id }: IRepositoryDTO) {
-    const nameUser = (await userService.getUser(user_id))["data"][0][
-      "name"
-    ].replace(" ", "-");
+    const nameUser = (await userService.getUser(user_id))["data"]["username"].replace(" ", "-");
 
     const slug = `${nameUser}-${name}`;
 
@@ -37,9 +35,7 @@ class RepositoryService {
     id: number,
     { description, name, publicRepo, user_id }: IRepositoryDTO
   ) {
-    const nameUser = (await userService.getUser(user_id))["data"][0][
-      "name"
-    ].replace(" ", "-");
+    const nameUser = (await userService.getUser(user_id))["data"]["username"].replace(" ", "-");
 
     const slug = `${nameUser}-${name}`;
 
