@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import RepositoryService from "../service/Repository.service";
+import StarService from '../service/Star.service';
 
 const repositoryService = new RepositoryService();
+const starService = new StarService();
 
 class RepositoryController {
 
@@ -51,6 +53,30 @@ class RepositoryController {
     const slug = request.params['slug'];
     
     const data = await repositoryService.getBySlug(slug);
+
+    if(data['error'])
+      return response.status(404).json(data);
+
+    return response.status(200).json(data);
+  }
+
+  async star(request: Request, response: Response) {
+    const userId = Number.parseInt(request['id']);
+    const repositoryId = Number.parseInt(request.params['id']);
+
+    const data = await starService.star(userId, repositoryId);
+
+    if(data['error'])
+      return response.status(404).json(data);
+
+    return response.status(201).json(data);
+  }
+
+  async unstar(request: Request, response: Response) {
+    const userId = Number.parseInt(request['id']);
+    const repositoryId = Number.parseInt(request.params['id']);
+
+    const data = await starService.unstar(userId, repositoryId);
 
     if(data['error'])
       return response.status(404).json(data);

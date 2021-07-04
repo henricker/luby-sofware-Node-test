@@ -1,6 +1,7 @@
 import Repository from "../models/Repository.model";
 import { IRepositoryDTO } from "./DTO/CreateRepository.dto";
 import UserService from "../service/User.service";
+import Star from "../models/Star.model";
 
 const userService = new UserService();
 
@@ -65,7 +66,7 @@ class RepositoryService {
   }
 
   async getBySlug(slug: string) {
-    const repository = await Repository.findOne({
+    const repository = (await Repository.findOne({
       where: { slug },
       attributes: {
         exclude: [
@@ -76,12 +77,15 @@ class RepositoryService {
           "userId",
         ],
       },
-    });
+      include: { model: Star, as: 'stars' }
+    })).toJSON();
+
+    repository['stars'] = repository['stars'].length;
 
     if (!repository)
       return { error: "Não existe um repositório com esse slug" };
 
-    return { data: repository.toJSON(), count: 1 };
+    return { data: repository, count: 1 };
   }
 
   async delete(id: number, userId: number) {
@@ -98,12 +102,13 @@ class RepositoryService {
 
   async getByUserId(userId: number) {
     const repositories = (
-      await Repository.findAll({ where: { user_id: userId } })
+      await Repository.findAll({ where: { user_id: userId }, include: { model: Star, as: 'stars' } })
     ).map(repository => {
       const repo = repository.toJSON();
       repo['createdAt'] = undefined;
       repo['updatedAt'] = undefined;
       repo['user_id'] = undefined;
+      repo['stars'] = repo['stars'].length;
 
       return repo;
     });
@@ -119,7 +124,7 @@ class RepositoryService {
     return false;
   }
 
-  private async hasRepositoryById(id: number) {
+  async hasRepositoryById(id: number) {
     const exists = await Repository.findOne({ where: { id } });
 
     if (exists) return true;

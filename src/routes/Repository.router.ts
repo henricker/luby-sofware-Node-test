@@ -17,6 +17,9 @@ repositoryRouter.put('/user/repository/:id', Auth.authFilter, (request, response
   respositoryController.update
 );
 repositoryRouter.delete('/user/repository/:id', Auth.authFilter, respositoryController.delete);
+repositoryRouter.post('/repository/like/:id', Auth.authFilter, respositoryController.star);
+repositoryRouter.delete('/repository/unlike/:id', Auth.authFilter, respositoryController.unstar);
+
 repositoryRouter.get('/user/repository/:slug', respositoryController.getBySlug);
 repositoryRouter.get('/user/repositories/:id', respositoryController.getByUserId);
 

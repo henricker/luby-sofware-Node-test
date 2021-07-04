@@ -2,7 +2,8 @@ import { DataTypes } from "sequelize";
 import connection from "../../database";
 import Follow from "./Follow.model";
 import Repository from "./Repository.model";
-import Token from "./Token.model";
+import Star from "./Star.model";
+
 
 const User = connection.define(
   "users",
