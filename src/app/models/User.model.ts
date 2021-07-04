@@ -1,6 +1,8 @@
 import { DataTypes } from "sequelize";
 import connection from "../../database";
 import Follow from "./Follow.model";
+import Repository from "./Repository.model";
+import Token from "./Token.model";
 
 const User = connection.define(
   "users",
@@ -19,6 +21,8 @@ const User = connection.define(
   },
 );
 
+User.hasMany(Repository, { foreignKey: 'user_id', as: 'repositories' });
+
 User.belongsToMany(User, {
   through: Follow,
   as: 'followers',
@@ -29,8 +33,6 @@ User.belongsToMany(User, {
   through: Follow,
   as: 'followings',
   foreignKey: 'follower'
-})
-
-
+});
 
 export default User;

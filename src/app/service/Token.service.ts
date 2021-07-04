@@ -4,7 +4,7 @@ import User from "../models/User.model";
 class TokenService {
 
   async getTokens() {
-    const data = await Token.findAll({ attributes: { exclude: ["createdAt", "updatedAt", "userId", "user_id"] }, include: { model: User, as: 'user'} });
+    const data = (await Token.findAll({ attributes: {exclude:['createdAt', 'updatedAt']}})).map(token => token.toJSON());
     
     return { data, count: data.length };
   }

@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import UserService from "../service/User.service";
+import FollowService from '../service/Follow.service';
 
 const userService = new UserService();
+const followService = new FollowService();
 
 class UserController {
+
   async getAllUsers(request: Request, response: Response) {
     const data = await userService.getAllUsers();
     return response.status(200).json(data);
@@ -48,34 +51,51 @@ class UserController {
     if(data['error'])
       return response.status(400).json(data);
     
-    return response.status(200).json(data);
+    return response.status(200).json({ message: "Usuário atualizado"});
   }
 
   // //needs be authenticated
-  // async follow(request: Request, response: Response) {
-  //   const following_id = Number.parseInt(request['id']);
-  //   const followed_id = Number.parseInt(request.params['id']);
+    async follow(request: Request, response: Response) {
+    const followerId = Number.parseInt(request['id']);
+    const followedId = Number.parseInt(request.params['id']);
 
-  //   const data = await followerFollowing.follow(following_id, followed_id);
+    const data = await followService.follow(followerId, followedId);
 
-  //   if(data['error'])
-  //     return response.status(400).json(data);
+    if(data['error'])
+      return response.status(400).json(data);
 
-  //   return response.status(200).json(data);
-  // }
+    return response.status(200).json(data);
+  }
 
-  //   //needs be authenticated
-  //   async unfollow(request: Request, response: Response) {
-  //     const following_id = Number.parseInt(request['id']);
-  //     const followed_id = Number.parseInt(request.params['id']);
+    //needs be authenticated
+    async unfollow(request: Request, response: Response) {
+      const followerId= Number.parseInt(request['id']);
+      const followedId = Number.parseInt(request.params['id']);
   
-  //     const data = await followerFollowing.unfollow(following_id, followed_id);
+      const data = await followService.unfollow(followerId, followedId);
   
-  //     if(data['error'])
-  //       return response.status(400).json(data);
+      if(data['error'])
+        return response.status(400).json(data);
   
-  //     return response.status(200).json(data);
-  //   }
+      return response.status(200).json(data);
+    }
+
+    async getFollowers(request: Request, response: Response) {
+
+      const userId = Number.parseInt(request.params['id']);
+
+      const followers = await userService.getFollowers(userId);
+
+      return response.status(200).json(followers);
+    }
+
+    async getFollowings(request: Request, response: Response) {
+      const userId = Number.parseInt(request.params['id']);
+
+      const followings = await userService.getFollowings(userId);
+
+      return response.status(200).json(followings);
+    }
 }
 
 export default new UserController();

@@ -15,7 +15,10 @@ export = {
          references: {
            model: 'users',
            key: 'id'
-         }
+         },
+
+         onDelete: 'CASCADE',
+         onUpdate: 'CASCADE'
        },
 
        followed: {
@@ -24,7 +27,10 @@ export = {
          references: {
            model: 'users',
            key: 'id'
-         }
+         },
+
+         onDelete: 'CASCADE',
+         onUpdate: 'CASCADE'
        },
 
        created_at: {
